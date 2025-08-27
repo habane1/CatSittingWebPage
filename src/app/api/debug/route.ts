@@ -27,16 +27,17 @@ export async function GET() {
 
     const client = new MongoClient(process.env.MONGODB_URI, {
       tls: true,
-      tlsAllowInvalidCertificates: false,
+      tlsAllowInvalidCertificates: true, // Allow invalid certificates for Vercel
       retryWrites: true,
       w: "majority" as const,
-      connectTimeoutMS: 10000,
-      socketTimeoutMS: 10000,
-      maxPoolSize: 5,
-      minPoolSize: 1,
-      maxIdleTimeMS: 30000,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
+      maxPoolSize: 1, // Reduced for serverless
+      minPoolSize: 0, // Start with 0 for serverless
+      maxIdleTimeMS: 10000, // Shorter idle time
       retryReads: true,
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 15000, // Shorter timeout
+      ssl: true,
     });
 
     console.log('🔌 Attempting to connect to MongoDB...');

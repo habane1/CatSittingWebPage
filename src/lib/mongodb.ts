@@ -2,21 +2,23 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI!;
 const options = {
-  // MongoDB Atlas specific options
+  // MongoDB Atlas specific options for Vercel serverless
   tls: true,
-  tlsAllowInvalidCertificates: false,
+  tlsAllowInvalidCertificates: true, // Allow invalid certificates for Vercel
   retryWrites: true,
   w: "majority" as const,
-  // Connection timeouts
-  connectTimeoutMS: 60000,
-  socketTimeoutMS: 60000,
-  // Pool settings
-  maxPoolSize: 5,
-  minPoolSize: 1,
-  maxIdleTimeMS: 30000,
+  // Connection timeouts (shorter for serverless)
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 30000,
+  // Pool settings (optimized for serverless)
+  maxPoolSize: 1, // Reduced for serverless
+  minPoolSize: 0, // Start with 0 for serverless
+  maxIdleTimeMS: 10000, // Shorter idle time
   // Retry settings
   retryReads: true,
-  serverSelectionTimeoutMS: 30000,
+  serverSelectionTimeoutMS: 15000, // Shorter timeout
+  // Additional SSL options for Vercel
+  ssl: true,
 };
 
 let client;
