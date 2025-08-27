@@ -25,26 +25,33 @@ export async function GET() {
       throw new Error('MONGODB_URI is not defined');
     }
 
-    const client = new MongoClient(process.env.MONGODB_URI, {
-      // MongoDB Atlas options optimized for Vercel
+    // Modify URI for Vercel serverless compatibility
+    let uri = process.env.MONGODB_URI!;
+    if (process.env.NODE_ENV === "production") {
+      // For Vercel, we need to disable SSL in the connection string
+      if (!uri.includes('ssl=')) {
+        uri += '&ssl=false';
+      }
+      if (!uri.includes('tls=')) {
+        uri += '&tls=false';
+      }
+    }
+
+    const client = new MongoClient(uri, {
+      // Minimal options for Vercel serverless
       retryWrites: true,
       w: "majority" as const,
-      // Longer timeouts for better reliability
-      connectTimeoutMS: 30000,
-      socketTimeoutMS: 30000,
-      serverSelectionTimeoutMS: 30000,
-      // Connection pool settings
+      // Short timeouts for serverless
+      connectTimeoutMS: 15000,
+      socketTimeoutMS: 15000,
+      serverSelectionTimeoutMS: 15000,
+      // Minimal pool for serverless
       maxPoolSize: 1,
       minPoolSize: 0,
-      maxIdleTimeMS: 30000,
-      // Retry settings
-      retryReads: true,
-      // SSL settings for MongoDB Atlas
-      tls: true,
-      tlsAllowInvalidCertificates: false,
-      // Authentication settings
-      authSource: 'admin',
-      authMechanism: 'SCRAM-SHA-1' as const,
+      maxIdleTimeMS: 10000,
+      // Disable SSL/TLS for Vercel
+      tls: false,
+      ssl: false,
     });
 
     console.log('🔌 Attempting to connect to MongoDB...');
