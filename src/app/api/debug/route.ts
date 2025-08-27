@@ -26,20 +26,25 @@ export async function GET() {
     }
 
     const client = new MongoClient(process.env.MONGODB_URI, {
-      // Simplified options for Vercel serverless compatibility
+      // MongoDB Atlas options optimized for Vercel
       retryWrites: true,
       w: "majority" as const,
-      // Minimal timeouts for serverless
-      connectTimeoutMS: 10000,
-      socketTimeoutMS: 10000,
-      serverSelectionTimeoutMS: 10000,
-      // Minimal pool for serverless
+      // Longer timeouts for better reliability
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 30000,
+      // Connection pool settings
       maxPoolSize: 1,
       minPoolSize: 0,
-      maxIdleTimeMS: 5000,
-      // Disable SSL validation for Vercel
-      tls: false,
-      ssl: false,
+      maxIdleTimeMS: 30000,
+      // Retry settings
+      retryReads: true,
+      // SSL settings for MongoDB Atlas
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+      // Authentication settings
+      authSource: 'admin',
+      authMechanism: 'SCRAM-SHA-1' as const,
     });
 
     console.log('🔌 Attempting to connect to MongoDB...');

@@ -1,26 +1,28 @@
 import { MongoClient } from "mongodb";
 
-// Modify the URI for Vercel compatibility
-let uri = process.env.MONGODB_URI!;
-if (process.env.NODE_ENV === "production") {
-  // Add SSL parameters to the connection string for Vercel
-  if (!uri.includes('ssl=')) {
-    uri += '&ssl=false&tls=false';
-  }
-}
+// Use the original URI without modifications
+const uri = process.env.MONGODB_URI!;
 
 const options = {
-  // Simplified options for Vercel serverless compatibility
+  // MongoDB Atlas options optimized for Vercel
   retryWrites: true,
   w: "majority" as const,
-  // Minimal timeouts for serverless
-  connectTimeoutMS: 10000,
-  socketTimeoutMS: 10000,
-  serverSelectionTimeoutMS: 10000,
-  // Minimal pool for serverless
+  // Longer timeouts for better reliability
+  connectTimeoutMS: 30000,
+  socketTimeoutMS: 30000,
+  serverSelectionTimeoutMS: 30000,
+  // Connection pool settings
   maxPoolSize: 1,
   minPoolSize: 0,
-  maxIdleTimeMS: 5000,
+  maxIdleTimeMS: 30000,
+  // Retry settings
+  retryReads: true,
+  // SSL settings for MongoDB Atlas
+  tls: true,
+  tlsAllowInvalidCertificates: false,
+  // Authentication settings
+  authSource: 'admin',
+  authMechanism: 'SCRAM-SHA-1' as const,
 };
 
 let client;
