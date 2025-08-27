@@ -144,7 +144,7 @@ export default function Navbar() {
                   className="flex items-center space-x-3 text-dark-gray-600 hover:text-olive-600 py-3 transition-colors"
                 >
                   <Phone size={20} />
-                  <span className="font-medium">(123) 456-7890</span>
+                  <span className="font-medium">(613) 859-6723</span>
                 </motion.a>
                 
                 <motion.div

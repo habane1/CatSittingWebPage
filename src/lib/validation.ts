@@ -10,7 +10,7 @@ export const bookingSchema = z.object({
   phone: z.string().min(10, 'Phone number too short').max(20, 'Phone number too long').trim(),
   startDate: z.string().min(1, 'Start date is required'),
   endDate: z.string().min(1, 'End date is required'),
-  service: z.enum(['drop-in', 'overnight', 'weekend'], {
+  service: z.enum(['Standard Visit', 'Extended Visit', 'Vet Appointment'], {
     errorMap: () => ({ message: 'Invalid service type' })
   }),
   notes: z.string().max(500, 'Notes too long').optional(),

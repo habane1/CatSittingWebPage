@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { bookingSchema, validateDateRange, createValidationError, createRateLimitError } from "@/lib/validation";
 import { checkRateLimit, getClientIdentifier } from "@/lib/rate-limit";
 import { rateLimitConfigs } from "@/lib/validation";
+import { sendEmail } from "@/lib/mailer";
 
 // ✅ helper to normalize MM/DD/YYYY → Date
 function normalizeDate(dateStr: string) {
@@ -134,7 +135,18 @@ export async function POST(req: Request) {
       return createValidationError("Booking cannot include past dates");
     }
 
-    const client = await clientPromise;
+    // Try to connect to MongoDB with better error handling
+    let client;
+    try {
+      client = await clientPromise;
+    } catch (dbError) {
+      console.error("❌ MongoDB connection error:", dbError);
+      return NextResponse.json(
+        { error: "Database connection failed. Please try again later." },
+        { status: 503 }
+      );
+    }
+
     const db = client.db(process.env.MONGODB_DB || "catsitting");
 
     const newBooking = {
@@ -154,11 +166,91 @@ export async function POST(req: Request) {
 
     const result = await db.collection("bookings").insertOne(newBooking);
 
+    // Send email notification to admin
+    try {
+      const adminEmail = "catnannyottawa@gmail.com";
+      const adminUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/login`;
+      
+      const emailSubject = `New Booking Request - ${name}`;
+      const emailText = `
+New booking request received:
+
+Client: ${name}
+Email: ${email}
+Phone: ${phone}
+Service: ${service}
+Dates: ${dates.join(', ')}
+Number of Cats: ${catCount}
+Address: ${address}
+Notes: ${notes || 'None'}
+Instructions: ${instructions || 'None'}
+Total Price: $${totalPrice || 0}
+
+To review and approve this booking, please visit:
+${adminUrl}
+
+Booking ID: ${result.insertedId}
+      `;
+
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333;">New Booking Request</h2>
+          <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #555;">Client Information</h3>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone}</p>
+            <p><strong>Service:</strong> ${service}</p>
+            <p><strong>Dates:</strong> ${dates.join(', ')}</p>
+            <p><strong>Number of Cats:</strong> ${catCount}</p>
+            <p><strong>Address:</strong> ${address}</p>
+            <p><strong>Notes:</strong> ${notes || 'None'}</p>
+            <p><strong>Special Instructions:</strong> ${instructions || 'None'}</p>
+            <p><strong>Total Price:</strong> $${totalPrice || 0}</p>
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${adminUrl}" 
+               style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Review & Approve Booking
+            </a>
+          </div>
+          
+          <p style="color: #666; font-size: 14px;">
+            <strong>Booking ID:</strong> ${result.insertedId}
+          </p>
+        </div>
+      `;
+
+      await sendEmail(adminEmail, emailSubject, emailText, emailHtml);
+      console.log("✅ Admin notification email sent successfully");
+    } catch (emailError) {
+      console.error("❌ Failed to send admin notification email:", emailError);
+      // Don't fail the booking creation if email fails
+    }
+
     return NextResponse.json({ ...newBooking, _id: result.insertedId });
   } catch (err) {
     console.error("❌ Error creating booking:", err);
+    
+    // Provide more specific error messages
+    if (err instanceof Error) {
+      if (err.message.includes("SSL") || err.message.includes("TLS")) {
+        return NextResponse.json(
+          { error: "Database connection issue. Please try again." },
+          { status: 503 }
+        );
+      }
+      if (err.message.includes("validation")) {
+        return NextResponse.json(
+          { error: "Invalid booking data provided." },
+          { status: 400 }
+        );
+      }
+    }
+    
     return NextResponse.json(
-      { error: "Failed to create booking" },
+      { error: "Failed to create booking. Please try again." },
       { status: 500 }
     );
   }
@@ -166,7 +258,18 @@ export async function POST(req: Request) {
 
 export async function GET() {
   try {
-    const client = await clientPromise;
+    // Try to connect to MongoDB with better error handling
+    let client;
+    try {
+      client = await clientPromise;
+    } catch (dbError) {
+      console.error("❌ MongoDB connection error:", dbError);
+      return NextResponse.json(
+        { error: "Database connection failed. Please try again later." },
+        { status: 503 }
+      );
+    }
+
     const db = client.db(process.env.MONGODB_DB || "catsitting");
 
     // ✅ only fetch approved
@@ -182,8 +285,19 @@ export async function GET() {
     return NextResponse.json(events);
   } catch (err) {
     console.error("❌ Error fetching bookings:", err);
+    
+    // Provide more specific error messages
+    if (err instanceof Error) {
+      if (err.message.includes("SSL") || err.message.includes("TLS")) {
+        return NextResponse.json(
+          { error: "Database connection issue. Please try again." },
+          { status: 503 }
+        );
+      }
+    }
+    
     return NextResponse.json(
-      { error: "Failed to fetch bookings" },
+      { error: "Failed to fetch bookings. Please try again." },
       { status: 500 }
     );
   }

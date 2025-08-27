@@ -139,10 +139,18 @@ function BookingFormContent() {
         }),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        console.error("Failed to parse response:", parseError);
+        setErrorMessage("Server error. Please try again later.");
+        setShowErrorModal(true);
+        return;
+      }
 
       if (!res.ok) {
-        setErrorMessage(data.error || "Failed to submit booking");
+        setErrorMessage(data?.error || "Failed to submit booking");
         setShowErrorModal(true);
         return;
       }

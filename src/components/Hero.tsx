@@ -8,7 +8,7 @@ import { ArrowRight, Star, Heart, Shield } from "lucide-react";
 export default function Hero() {
   const features = [
     { icon: Heart, text: "Loving Care", delay: 0.6 },
-    { icon: Shield, text: "Fully Insured", delay: 0.8 },
+    { icon: Shield, text: "Professional Service", delay: 0.8 },
     { icon: Star, text: "5-Star Rated", delay: 1.0 },
   ];
 
