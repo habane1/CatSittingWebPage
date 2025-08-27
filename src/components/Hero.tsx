@@ -47,7 +47,7 @@ export default function Hero() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Column - Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -213,36 +213,36 @@ export default function Hero() {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="relative"
+              className="relative mt-8 lg:mt-0"
             >
-              <div className="bg-gradient-to-br from-olive-100 to-beige-200 rounded-3xl p-8 shadow-large">
-                <div className="bg-white rounded-2xl p-6 shadow-medium">
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className="w-12 h-12 bg-olive-100 rounded-full flex items-center justify-center">
-                      <Heart size={24} className="text-olive-600" />
+              <div className="bg-gradient-to-br from-olive-100 to-beige-200 rounded-3xl p-6 md:p-8 shadow-large">
+                <div className="bg-white rounded-2xl p-4 md:p-6 shadow-medium">
+                  <div className="flex items-center space-x-3 md:space-x-4 mb-4 md:mb-6">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-olive-100 rounded-full flex items-center justify-center">
+                      <Heart size={20} className="md:w-6 md:h-6 text-olive-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-dark-gray-800">Daily Updates</h3>
-                      <p className="text-sm text-dark-gray-600">Photos & messages</p>
+                      <h3 className="font-semibold text-dark-gray-800 text-sm md:text-base">Daily Updates</h3>
+                      <p className="text-xs md:text-sm text-dark-gray-600">Photos & messages</p>
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-olive-500 rounded-full"></div>
-                      <span className="text-dark-gray-700">Feeding & fresh water</span>
+                  <div className="space-y-3 md:space-y-4">
+                    <div className="flex items-center space-x-2 md:space-x-3">
+                      <div className="w-2 h-2 md:w-3 md:h-3 bg-olive-500 rounded-full"></div>
+                      <span className="text-dark-gray-700 text-sm md:text-base">Feeding & fresh water</span>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-olive-500 rounded-full"></div>
-                      <span className="text-dark-gray-700">Litter box maintenance</span>
+                    <div className="flex items-center space-x-2 md:space-x-3">
+                      <div className="w-2 h-2 md:w-3 md:h-3 bg-olive-500 rounded-full"></div>
+                      <span className="text-dark-gray-700 text-sm md:text-base">Litter box maintenance</span>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-olive-500 rounded-full"></div>
-                      <span className="text-dark-gray-700">Playtime & cuddles</span>
+                    <div className="flex items-center space-x-2 md:space-x-3">
+                      <div className="w-2 h-2 md:w-3 md:h-3 bg-olive-500 rounded-full"></div>
+                      <span className="text-dark-gray-700 text-sm md:text-base">Playtime & cuddles</span>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-olive-500 rounded-full"></div>
-                      <span className="text-dark-gray-700">Medication if needed</span>
+                    <div className="flex items-center space-x-2 md:space-x-3">
+                      <div className="w-2 h-2 md:w-3 md:h-3 bg-olive-500 rounded-full"></div>
+                      <span className="text-dark-gray-700 text-sm md:text-base">Medication if needed</span>
                     </div>
                   </div>
                 </div>
@@ -254,14 +254,14 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 1.2 }}
-              className="absolute -top-4 -right-4 bg-white rounded-2xl p-4 shadow-large"
+              className="absolute -top-4 -right-4 md:-top-4 md:-right-4 -top-8 -right-2 bg-white rounded-2xl p-3 md:p-4 shadow-large max-w-[200px] md:max-w-none"
             >
-              <div className="flex items-center space-x-2 mb-2">
+              <div className="flex items-center space-x-1 md:space-x-2 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={16} className="text-yellow-400 fill-current" />
+                  <Star key={i} size={14} className="md:w-4 md:h-4 text-yellow-400 fill-current" />
                 ))}
               </div>
-              <p className="text-sm text-dark-gray-600 italic">
+              <p className="text-xs md:text-sm text-dark-gray-600 italic leading-tight">
                 "Amazing care for our cats! Highly recommend!"
               </p>
               <p className="text-xs text-dark-gray-500 mt-1">- Sarah M.</p>

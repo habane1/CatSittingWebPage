@@ -200,7 +200,9 @@ function BookingFormContent() {
       d.setDate(today.getDate() + i);
       week.push(d);
     }
-    setDates(week);
+    // Week dates are already in chronological order, but let's ensure they're sorted
+    const sortedWeek = week.sort((a, b) => a.getTime() - b.getTime());
+    setDates(sortedWeek);
     clearValidationError('dates');
   }
 
@@ -214,7 +216,9 @@ function BookingFormContent() {
     for (let i = today.getDate(); i <= daysInMonth; i++) {
       month.push(new Date(year, monthIndex, i));
     }
-    setDates(month);
+    // Month dates are already in chronological order, but let's ensure they're sorted
+    const sortedMonth = month.sort((a, b) => a.getTime() - b.getTime());
+    setDates(sortedMonth);
     clearValidationError('dates');
   }
 
@@ -488,12 +492,16 @@ function BookingFormContent() {
                     Number of Cats *
                   </label>
                   <div className="relative">
-                    <Users size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-dark-gray-400" />
+                    <Users size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-dark-gray-400 pointer-events-none z-10" />
                     <select
                       value={catCount}
                       onChange={(e) => setCatCount(Number(e.target.value))}
                       required
-                      className="w-full pl-12 pr-4 py-3 border border-beige-300 rounded-2xl focus:ring-2 focus:ring-olive-500 focus:border-transparent transition-all duration-300 bg-beige-50"
+                      className="w-full pl-12 pr-4 py-3 border border-beige-300 rounded-2xl focus:ring-2 focus:ring-olive-500 focus:border-transparent transition-all duration-300 bg-beige-50 appearance-none"
+                      style={{
+                        WebkitAppearance: 'none',
+                        MozAppearance: 'none'
+                      }}
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <option key={num} value={num}>
@@ -501,6 +509,12 @@ function BookingFormContent() {
                         </option>
                       ))}
                     </select>
+                    {/* Custom dropdown arrow */}
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      <svg className="w-4 h-4 text-dark-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
                   </div>
                   {additionalCats > 0 && (
                     <p className="text-sm text-olive-600 mt-2">
@@ -558,7 +572,9 @@ function BookingFormContent() {
                     mode="multiple"
                     selected={dates}
                     onSelect={(newDates) => {
-                      setDates(newDates || []);
+                      // Sort dates chronologically when selected
+                      const sortedDates = (newDates || []).sort((a, b) => a.getTime() - b.getTime());
+                      setDates(sortedDates);
                       clearValidationError('dates');
                     }}
                     fromDate={new Date()}

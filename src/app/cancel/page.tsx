@@ -69,7 +69,7 @@ function CancelPageContent() {
           
           <div className="space-y-2 text-sm text-gray-600">
             <p>📧 Email: <a href="mailto:support@catsitting.com" className="text-pink-500 hover:underline">support@catsitting.com</a></p>
-            <p>📱 Phone: <a href="tel:+1234567890" className="text-pink-500 hover:underline">+1 (234) 567-890</a></p>
+            <p>📱 Phone: <a href="tel:+16138596723" className="text-pink-500 hover:underline">(613) 859-6723</a></p>
           </div>
         </div>
       </div>

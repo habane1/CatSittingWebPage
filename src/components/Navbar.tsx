@@ -79,7 +79,7 @@ export default function Navbar() {
             {/* Contact Info */}
             <div className="flex items-center space-x-4 ml-8">
               <motion.a
-                href="tel:+1234567890"
+                href="tel:+16138596723"
                 whileHover={{ scale: 1.1 }}
                 className="flex items-center space-x-2 text-dark-gray-600 hover:text-olive-600 transition-colors"
               >
@@ -137,7 +137,7 @@ export default function Navbar() {
               
               <div className="pt-4 border-t border-beige-200">
                 <motion.a
-                  href="tel:+1234567890"
+                  href="tel:+16138596723"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4 }}

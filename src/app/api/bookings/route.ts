@@ -119,8 +119,11 @@ export async function POST(req: Request) {
       return createValidationError("Missing required fields");
     }
 
-    // Date validation
-    const dateValidation = validateDateRange(dates[0], dates[dates.length - 1]);
+    // Sort dates to ensure proper chronological order
+    const sortedDates = [...dates].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    
+    // Date validation using sorted dates
+    const dateValidation = validateDateRange(sortedDates[0], sortedDates[sortedDates.length - 1]);
     if (!dateValidation.valid) {
       return createValidationError(dateValidation.error!);
     }
@@ -128,7 +131,7 @@ export async function POST(req: Request) {
     // ✅ Prevent past dates
     const today = new Date();
     today.setHours(0, 0, 0, 0); // normalize to midnight
-    const normalizedDates = dates.map((d: string) => new Date(d));
+    const normalizedDates = sortedDates.map((d: string) => new Date(d));
 
     const hasPastDate = normalizedDates.some((d) => d < today);
     if (hasPastDate) {
@@ -155,7 +158,7 @@ export async function POST(req: Request) {
       phone,
       address,
       instructions: instructions || "",
-      dates,
+      dates: sortedDates, // Use sorted dates instead of original dates
       notes: notes || "",
       service,
       catCount,
@@ -179,7 +182,7 @@ Client: ${name}
 Email: ${email}
 Phone: ${phone}
 Service: ${service}
-Dates: ${dates.join(', ')}
+Dates: ${sortedDates.join(', ')}
 Number of Cats: ${catCount}
 Address: ${address}
 Notes: ${notes || 'None'}
